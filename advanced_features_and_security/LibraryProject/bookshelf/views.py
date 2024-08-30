@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import permission_required
 from .forms import BookForm
 from .forms import ExampleForm
 from .models import Book
+from django.shortcuts import render, get_object_or_404
 
 
 # Create your views here.
@@ -54,3 +55,7 @@ def delete_book(request, book_id):
         book.delete()
         return redirect('book_list')
     return render(request, 'bookshelf/delete_book.html', {'book': book})
+
+def book_detail(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    return render(request, 'bookshelf/book_detail.html', {'book': book})

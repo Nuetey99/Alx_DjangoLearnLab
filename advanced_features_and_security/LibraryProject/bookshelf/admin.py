@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 # Register your models here.
 
 class CustomUserAdmin(UserAdmin):
-    model = CustomUser
+    model=CustomUser
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'date_of_birth', 'profile_photo')}),
