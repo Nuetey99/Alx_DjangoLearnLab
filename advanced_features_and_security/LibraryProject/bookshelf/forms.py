@@ -9,5 +9,5 @@ class BookForm(forms.ModelForm):
 
     
     class ExampleForm(forms.Form):
-    title = forms.CharField(max_length=100, required=True)
+        title = forms.CharField(max_length=100, required=True)
     description = forms.CharField(widget=forms.Textarea, required=True)
