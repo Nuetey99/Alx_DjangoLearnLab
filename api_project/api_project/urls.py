@@ -5,6 +5,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path('books/', BookList.as_view(), name='book-list'),
-      path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
 ]
