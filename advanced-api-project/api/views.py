@@ -4,7 +4,7 @@ from .models import Book
 from .serializers import BookSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 
 # ListView to retrieve all books
 class BookListView(generics.ListAPIView):
@@ -15,7 +15,7 @@ class BookListView(generics.ListAPIView):
     filterset_fields = ['title', 'author__name', 'publication_year']  # Allow filtering by these fields
     search_fields = ['title', 'author__name']  # Enable search on title and author name
     ordering_fields = ['title', 'publication_year']  # Enable ordering by title and publication year
-    
+
 # DetailView to retrieve a single book by ID
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
