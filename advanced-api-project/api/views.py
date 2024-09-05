@@ -16,7 +16,7 @@ class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly] # Restrict to authenticated users
-    filter_backends = [OrderingFilter]
+    filter_backends = [filters.OrderingFilter]
     filterset_fields = ['title', 'author__name', 'publication_year']  # Allow filtering by these fields
     search_fields = ['title', 'author__name']  # Enable search on title and author name
     ordering_fields = ['title', 'publication_year']  # Enable ordering by title and publication year
