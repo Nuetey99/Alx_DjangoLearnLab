@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticatedOrReadOnly , IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly , IsAuthenticated # type: ignore
 from django.shortcuts import render
 from rest_framework import generics # type: ignore
 from .models import Book
@@ -37,6 +37,7 @@ def create(self, request, *args, **kwargs):
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
 
 # UpdateView to modify an existing book
 class BookUpdateView(generics.UpdateAPIView):
