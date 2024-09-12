@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect , get_object_or_404
-from .forms import UserRegisterForm , PostForm
+from .forms import UserRegisterForm , PostFor , CommentForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView , CreateView , UpdateView , DeleteView
@@ -32,23 +32,22 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_form.html'
       
-    def get(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        comments = post.comments.all()
-        form = CommentForm()
-        return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'form': form})
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        context['comments'] = self.object.comments.all()
+        return context
 
-    def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         form = CommentForm(request.POST)
         if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            return redirect('post-detail', pk=post.pk)
-        comments = post.comments.all()
-        return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'form': form})
+            form.instance.post = self.object
+            form.instance.author = request.user
+            form.save()
+            return redirect(self.object.get_absolute_url())
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -98,3 +97,19 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
         if comment.author == request.user:
             comment.delete()
         return redirect('post-detail', pk=pk)
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        # Set the post and author before saving the comment
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect to the post detail page after a successful comment creation
+        return self.object.post.get_absolute_url()
