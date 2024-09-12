@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views, PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
+from .views import PostDetailView, CommentUpdateView, CommentDeleteView
 
 urlpatterns = [
     path('login', auth_views.LoginView.as_view(template_name='blog/login.html'), name = 'login'),
@@ -29,5 +30,7 @@ urlpatterns = [
     path('post/new/', PostCreateView.as_view(), name='post-create'),
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),  # Missing URL for update
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    path('post/<int:pk>/comment/<int:comment_id>/edit/', CommentUpdateView.as_view(), name='comment-update'),
+    path('post/<int:pk>/comment/<int:comment_id>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 ]
 
