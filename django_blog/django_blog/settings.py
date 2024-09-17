@@ -15,15 +15,47 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow the site to be preloaded in HSTS lists
+
+# Ensure cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Additional security headers
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking by disallowing framing of the site
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME-type sniffing by browsers
+SECURE_BROWSER_XSS_FILTER = True  # Enable the browser's XSS filtering
+
+# Handle HTTPS headers from the proxy server
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Content Security Policy (CSP)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", 'https://stackpath.bootstrapcdn.com/')
+CSP_SCRIPT_SRC = ("'self'", 'https://code.jquery.com/')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lms5@d164qf_+@4^*bm*812+$q%ft61_54bc3c9@3_3#!cg27@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure--xqx6*h+iid&l8z^m3og9!t^4rpcgo&)=r)1h5c*75q0go8bjh'
+
 
 ALLOWED_HOSTS = []
 
@@ -38,6 +70,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'rest_framework',
+    'taggit'
+
 ]
 
 MIDDLEWARE = [
@@ -51,11 +86,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'django_blog.urls'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Set the base templates folder 
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,12 +113,11 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # Or 'mysql', 'oracle', etc.
-        'NAME': 'your_database_name',  # Name of your database
-        'USER': 'your_database_user',  # The PostgreSQL user created to manage the database
-        'PASSWORD': 'your_password',  # Password for the PostgreSQL user
-        'HOST': 'localhost',  # Set to empty string for localhost
-        'PORT': '5432',  # Default PostgreSQL port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        'USER' : 'JoshLamptey',
+        'HOST' : 'localhost',
+        'PORT' : '8888',
     }
 }
 
@@ -121,11 +157,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

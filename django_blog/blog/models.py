@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django import forms 
+from taggit.managers import TaggableManager
 
 # Create your models here.
 class Post(models.Model):
@@ -20,3 +22,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author} on {self.post}'
+
+# CommentForm definition
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if not content:
+            raise forms.ValidationError('Content cannot be empty.')
+        return content
