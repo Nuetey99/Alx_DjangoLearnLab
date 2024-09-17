@@ -19,6 +19,7 @@ Including another URLconf
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from ..accounts.views import PostViewSet, CommentViewSet
+from .views import FollowUserView, UnfollowUserView , UserFeedView
 
 router = DefaultRouter()
 router.register(r'posts', PostViewSet)
@@ -26,6 +27,9 @@ router.register(r'comments', CommentViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-     path('api/accounts/', include('accounts.urls')),
+    path('api/accounts/', include('accounts.urls')),
     path('api/', include('posts.urls')),
+    path('follow/<int:user_id>/', FollowUserView.as_view(), name='follow-user'),
+    path('unfollow/<int:user_id>/', UnfollowUserView.as_view(), name='unfollow-user'),
+     path('feed/', UserFeedView.as_view(), name='user-feed'),
 ]
